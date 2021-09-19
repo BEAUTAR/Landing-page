@@ -1,19 +1,70 @@
 <script>
+
+    
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+    import { initializeApp } from 'firebase/app';
+    
+    // TODO: Replace the following with your app's Firebase project configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
+    import { onMount } from "svelte";
+   let provider 
+   let auth
+    onMount(() =>{
+        const firebaseConfig = {
+  apiKey: "AIzaSyCQJ-RliZe8V8M7LRAJqa6tzlLqxt1QKNs",
+  authDomain: "landing-page-7972c.firebaseapp.com",
+  projectId: "landing-page-7972c",
+  storageBucket: "landing-page-7972c.appspot.com",
+  messagingSenderId: "374238400975",
+  appId: "1:374238400975:web:0fe6aef664f44e4d4382ba",
+  measurementId: "G-70NVEG20S1"
+};
+    initializeApp(firebaseConfig);
+     provider = new GoogleAuthProvider();   
+     auth = getAuth();
+    });
+    
     let links = ["portfolio", "about me", "my blog", "reveiws", "contact me"];
     let imgs = ["twitter", "dribbble", "behance", "vimeo", "linkedin"];
+    var topLine =['🔍Search', 'Sign in', 'Sign up']
+    let exception = 0;
+    function exceptSearch (){
+       return topLine.pop(exception)
+    };
+   console.log(topLine.shift);
+
+   
+function signInWithGoogle() {
+    signInWithPopup(auth, provider)
+  .then((result) => {
+    // This gives you a Google Access Token. You can use it to access the Google API.
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const token = credential.accessToken;
+    // The signed-in user info.
+    const user = result.user;
+    console.log(user);
+    // ...
+  }).catch((error) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // The email of the user's account used.
+    const email = error.email;
+    // The AuthCredential type that was used.
+    const credential = GoogleAuthProvider.credentialFromError(error);
+    // ...
+  });  
+}
+
 </script>
 
-<nav>
-    <svg width="109" height="24" viewBox="0 0 109 24" fill="none" xmlns="http://www.w3.org/2000/svg" class = "hbar">
-        <path d="M15.01 8.08999L9.19001 14.36L15.13 23H9.55001L6.04001 17.75L4.57001 19.34V23H0.0100098V1.27999H4.57001V13.1L9.10001 8.08999H15.01Z" fill="black"/>
-        <path d="M16.0729 18.89C16.0729 17.63 16.4829 16.62 17.3029 15.86C18.1229 15.08 19.1829 14.59 20.4829 14.39L23.9929 13.85C24.7129 13.75 25.0729 13.41 25.0729 12.83C25.0729 12.37 24.8729 11.99 24.4729 11.69C24.0929 11.37 23.5629 11.21 22.8829 11.21C22.1229 11.21 21.5129 11.43 21.0529 11.87C20.6129 12.29 20.3729 12.8 20.3329 13.4L16.3729 12.59C16.4729 11.35 17.0829 10.22 18.2029 9.19999C19.3429 8.15999 20.9129 7.63999 22.9129 7.63999C25.1729 7.63999 26.8329 8.17999 27.8929 9.25998C28.9729 10.34 29.5129 11.72 29.5129 13.4V20.69C29.5129 21.63 29.5729 22.4 29.6929 23H25.5829C25.4829 22.6 25.4329 22.04 25.4329 21.32C24.5729 22.72 23.1729 23.42 21.2329 23.42C19.6529 23.42 18.3929 22.98 17.4529 22.1C16.5329 21.2 16.0729 20.13 16.0729 18.89ZM22.3429 20.12C23.1229 20.12 23.7729 19.89 24.2929 19.43C24.8129 18.97 25.0729 18.21 25.0729 17.15V16.49L22.2529 16.94C21.1329 17.12 20.5729 17.67 20.5729 18.59C20.5729 19.01 20.7129 19.37 20.9929 19.67C21.2929 19.97 21.7429 20.12 22.3429 20.12Z" fill="black"/>
-        <path d="M37.9099 23H33.3499V8.08999H37.6999V9.79999C38.0599 9.15999 38.6499 8.63999 39.4699 8.23999C40.3099 7.83999 41.1499 7.63999 41.9899 7.63999C44.1299 7.63999 45.5999 8.41999 46.3999 9.97999C47.4799 8.41999 49.0199 7.63999 51.0199 7.63999C52.5799 7.63999 53.8899 8.11999 54.9499 9.07999C56.0099 10.02 56.5399 11.44 56.5399 13.34V23H52.1299V14.36C52.1299 13.62 51.9299 13.02 51.5299 12.56C51.1299 12.08 50.5399 11.84 49.7599 11.84C48.9799 11.84 48.3699 12.09 47.9299 12.59C47.4899 13.09 47.2699 13.69 47.2699 14.39V23H42.7699V14.36C42.7699 13.62 42.5599 13.02 42.1399 12.56C41.7399 12.08 41.1499 11.84 40.3699 11.84C39.6099 11.84 39.0099 12.09 38.5699 12.59C38.1299 13.09 37.9099 13.7 37.9099 14.42V23Z" fill="black"/>
-        <path d="M64.9509 23H60.3909V8.08999H64.9509V23ZM60.7809 5.41999C60.2609 4.89999 60.0009 4.26998 60.0009 3.52998C60.0009 2.78998 60.2609 2.15999 60.7809 1.63999C61.3009 1.11999 61.9209 0.859985 62.6409 0.859985C63.3809 0.859985 64.0109 1.11999 64.5309 1.63999C65.0709 2.15999 65.3409 2.78998 65.3409 3.52998C65.3409 4.26998 65.0709 4.89999 64.5309 5.41999C64.0109 5.93999 63.3809 6.19999 62.6409 6.19999C61.9209 6.19999 61.3009 5.93999 60.7809 5.41999Z" fill="black"/>
-        <path d="M73.5056 23H68.9456V1.27999H73.5056V23Z" fill="black"/>
-        <path d="M82.0895 23H77.5295V8.08999H82.0895V23ZM77.9195 5.41999C77.3995 4.89999 77.1395 4.26998 77.1395 3.52998C77.1395 2.78998 77.3995 2.15999 77.9195 1.63999C78.4395 1.11999 79.0595 0.859985 79.7795 0.859985C80.5195 0.859985 81.1495 1.11999 81.6695 1.63999C82.2095 2.15999 82.4795 2.78998 82.4795 3.52998C82.4795 4.26998 82.2095 4.89999 81.6695 5.41999C81.1495 5.93999 80.5195 6.19999 79.7795 6.19999C79.0595 6.19999 78.4395 5.93999 77.9195 5.41999Z" fill="black"/>
-        <path d="M85.1842 18.89C85.1842 17.63 85.5942 16.62 86.4142 15.86C87.2342 15.08 88.2942 14.59 89.5942 14.39L93.1042 13.85C93.8242 13.75 94.1842 13.41 94.1842 12.83C94.1842 12.37 93.9842 11.99 93.5842 11.69C93.2042 11.37 92.6742 11.21 91.9942 11.21C91.2342 11.21 90.6242 11.43 90.1642 11.87C89.7242 12.29 89.4842 12.8 89.4442 13.4L85.4842 12.59C85.5842 11.35 86.1942 10.22 87.3142 9.19999C88.4542 8.15999 90.0242 7.63999 92.0242 7.63999C94.2842 7.63999 95.9442 8.17999 97.0042 9.25998C98.0842 10.34 98.6242 11.72 98.6242 13.4V20.69C98.6242 21.63 98.6842 22.4 98.8042 23H94.6942C94.5942 22.6 94.5442 22.04 94.5442 21.32C93.6842 22.72 92.2842 23.42 90.3442 23.42C88.7642 23.42 87.5042 22.98 86.5642 22.1C85.6442 21.2 85.1842 20.13 85.1842 18.89ZM91.4542 20.12C92.2342 20.12 92.8842 19.89 93.4042 19.43C93.9242 18.97 94.1842 18.21 94.1842 17.15V16.49L91.3642 16.94C90.2442 17.12 89.6842 17.67 89.6842 18.59C89.6842 19.01 89.8242 19.37 90.1042 19.67C90.4042 19.97 90.8542 20.12 91.4542 20.12Z" fill="black"/>
-        <path d="M103.181 22.37C102.581 21.75 102.281 21.02 102.281 20.18C102.281 19.34 102.581 18.62 103.181 18.02C103.781 17.42 104.501 17.12 105.341 17.12C106.181 17.12 106.901 17.42 107.501 18.02C108.121 18.62 108.431 19.34 108.431 20.18C108.431 21 108.121 21.72 107.501 22.34C106.901 22.96 106.181 23.27 105.341 23.27C104.501 23.27 103.781 22.97 103.181 22.37Z" fill="black"/>
-    </svg>
+<nav class="navbar">
+        <div class = 'logo'>
+            <a href=".">
+                <img src="./Logo.png" alt="Logo"/>
+            </a>
+        </div>
 
     <div class="nav-links">
         {#each links as link }
@@ -24,19 +75,82 @@
     </div>
 
     <div class="socials">
-        {#each imgs as pic}
-            <img src="./images/{pic}.png" alt="{pic}" />
+        {#each imgs as pic}  
+        <p><img src="./images/{pic}.png" alt="{pic}" /></p>
         {/each}
     </div>
-        
+   <div class="options">
+        <button class='optnButton'>   
+            🔍Search
+        </button>
+    
+        <button on:click={signInWithGoogle} class="optButton">   
+            Sign In
+         </button>
+    
+    <a href="./SignUp">
+        <button class='optsButton'>   
+            Sign Up
+         </button>
+    </a>
+    </div>  
 </nav>
 
 <style>
     .nav-links{
+        position: fixed;
         display: flex;
         flex-direction: row;
+        width: 1000px;
+        left: 250px;
     }
+    .options{
+        position: fixed;
+        display: flex;
+        width: 600px;  
+        left: 1000px; 
+        flex-direction: row;
+        font-weight: bold;
+        transition: all 0.2s; 
+         
+    }   
+    .options > button {
+         margin-left: 1rem;
+        margin-right: 1rem;
+    }
+    .optButton{
+        background: #E2E8F0;
+        color: rgb(39, 48, 61);
+        border: solid rgb(97, 100, 104);
+        border-radius: 15px;
+         
+    }
+    .optsButton
+    {
+        margin-left: 10px;
+        background: #E2E8F0;
+        color: rgb(39, 48, 61);
+        border: solid rgb(97, 100, 104);
+        border-radius: 15px;
+         
+    }
+    .optnButton{
+        background: #E2E8F0;
+        color: rgb(39, 48, 61);
+        border: solid rgb(97, 100, 104);
+        border-radius: 15px;
+        width: 170px; height: 25px;
+          
+    }
+    button:hover{
+        cursor: pointer;
+        background: rgb(125, 130, 136);
+    }
+        
+    .logo{
+        margin-left: 5rem;
 
+    }
     .nav-links > p {
         margin-left: 1rem;
         margin-right: 1rem;
@@ -44,17 +158,31 @@
         transition: all 0.2s;
     }
 
-    .socials > img {
-        margin-left: 0.5rem;
-        margin-right: 0.5rem;
-        transition: all 0.2s;
+    .navbar {
+        background-color: #fff;
     }
 
+    .socials {
+        display:flex;
+        align-content: space-between;
+        flex-direction: row;
+        position: fixed;
+        left: 750px;
+        transition: all 0.2s;
+        width: 400px;
+      
+    }
+    .socials > p {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem
+    }
     nav {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-    }
+        align-content: space-around;
+        position:fixed;
+        z-index: 100;
+        }
 
     p:hover {
         color: #CB3322;
@@ -62,12 +190,10 @@
         transform: scale(1.1);
     }
 
-    img:hover {
+    p:hover {
         transform: scale(1.5);
         cursor: pointer;
     }
-    .hbar{
-        margin-left: 5rem;
-    }
+    
    
 </style>
